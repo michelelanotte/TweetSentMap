@@ -7,6 +7,7 @@ Created on Tue Dec 28 11:30:30 2021
 
 import os
 from datetime import datetime
+import time
 from utility.utils import dataFrameToTsv
 from utility.sentiment_analysis import sentimentAnalysis
 from utility.compute_coordinate_ne import getCoordinates
@@ -21,7 +22,7 @@ def update_sentiment_and_coordinate():
         #list of sentiments for each tweet
         sentiments = sentimentAnalysis(tweets)
         #list of coordinates for each tweet. Each coordinates element is of the form <latitude, longitude>
-        coordinates = getCoordinates(tweets)
+        coordinates = getCoordinates(tweets) #TO DO
         dataset = zip(tweets, sentiments, coordinates)
         
         #this file contains triples <tweet, sentiment, coordinates> 
@@ -38,7 +39,9 @@ while(True):
     new_last_update = datetime.fromtimestamp(os.path.getmtime("dataset/tweets_dataset.txt"))
     if new_last_update > last_update:
         update_sentiment_and_coordinate()
-        last_update = new_last_update"""    
+        last_update = new_last_update
+    time.sleep(60)
+"""    
     
     
     

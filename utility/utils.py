@@ -7,29 +7,37 @@ Created on Fri Nov 12 12:14:30 2021
 
 import pandas as pd
 import re
+import spacy
 import string
 import nltk
 from nltk.tokenize import word_tokenize
+#from nltk.corpus import stopwords
+
+#stop_words = set(stopwords.words('english'))
+nlp = spacy.load("en_core_web_sm")
 
 
-stopwordlist = ['a', 'about', 'above', 'after', 'again', 'ain', 'all', 'am', 'an',
-             'and','any','are', 'as', 'at', 'be', 'because', 'been', 'before',
-             'being', 'below', 'between','both', 'by', 'can', 'd', 'did', 'do',
-             'does', 'doing', 'down', 'during', 'each','few', 'for', 'from',
-             'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here',
-             'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in',
-             'into','is', 'it', 'its', 'itself', 'just', 'll', 'm', 'ma',
-             'me', 'more', 'most','my', 'myself', 'now', 'o', 'of', 'on', 'once',
-             'only', 'or', 'other', 'our', 'ours','ourselves', 'out', 'own', 're','s', 
-             'same', 'she', "shes", 'should', "shouldve",'so', 'some', 'such',
-             't', 'than', 'that', "thatll", 'the', 'their', 'theirs', 'them',
-             'themselves', 'then', 'there', 'these', 'they', 'this', 'those',
-             'through', 'to', 'too','under', 'until', 'up', 've', 'very', 'was',
-             'we', 'were', 'what', 'when', 'where','which','while', 'who', 'whom',
-             'why', 'will', 'with', 'won', 'y', 'you', "youd","youll", "youre",
-             "youve", 'your', 'yours', 'yourself', 'yourselves']
-    
-STOPWORDS = set(stopwordlist)
+def getNE(tweet, filters):
+    new_doc = nlp(tweet)
+        
+    entities = []
+    for ent in new_doc.ents:
+        text = ent.text
+        if "https" not in text:
+            if ent.label_ not in filters:
+                entities.append(ent.text)
+    return entities
+
+
+def read_tsv(tsv):
+    df = pd.read_csv("predictions/" + tsv, delimiter = "\t", encoding='cp1252', names = ["Tweet", "Sentiment"])
+    return df
+
+
+"""This method write triples <tweet, sentiment, coordinate> in tsv file specified in the arguments"""
+def dataFrameToTsv(dataset, tsv_file):
+    df = pd.DataFrame(dataset, columns = ["Tweet", "Sentiment", "Coordinate"]) 
+    df.to_csv(tsv_file, sep = "\t", index = False, line_terminator='\n')
 
 
 def remove_emoji(text):
@@ -55,14 +63,23 @@ def remove_emoji(text):
                            "]+", flags=re.UNICODE)
     return emoji_pattern.sub(r'', text)
 
+
+def cleaning_stopwords(tweet):
+    #return " ".join([word for word in str(text).split() if word not in stop_words])
     
-def read_tsv(tsv):
-    df = pd.read_csv("predictions/" + tsv, delimiter = "\t", encoding='cp1252', names = ["Tweet", "Sentiment"])
-    return df
-
-
-def cleaning_stopwords(text):
-    return " ".join([word for word in str(text).split() if word not in STOPWORDS])
+    tweet_nlp = nlp(tweet)
+    # Create list of word tokens after removing stopwords
+    filtered_sentence =[] 
+    
+    token_list = []
+    for token in tweet_nlp:
+        token_list.append(token.text)
+    
+    for word in token_list:
+        lexeme = nlp.vocab[word]
+        if lexeme.is_stop == False:
+            filtered_sentence.append(word) 
+    return " ".join(filtered_sentence) 
 
 
 english_punctuations = string.punctuation
@@ -76,9 +93,19 @@ def cleaning_repeating_char(text):
     return re.sub(r'(.)1+', r'1', text)
 
 
-def cleaning_URLs_and_tagging(text):
-    pattern_re = "@\S+|RT @\S+|https?:\S+|http?:\S|[^A-Za-z0-9]+"
+def cleaning_URLs(text):
+    pattern_re = "https?:\S+|http?:\S|[^A-Za-z0-9]+"
     return re.sub(pattern_re, ' ', text)
+
+
+def cleaning_tags(text):
+    pattern_re = "@\S+|RT @\S+"
+    return re.sub(pattern_re, ' ', text)  
+
+
+def cleaning_URLs_and_tagging(text):
+    text = cleaning_URLs(text)
+    return cleaning_tags(text)
 
 
 def cleaning_numbers(text):
@@ -115,7 +142,7 @@ def cleaning_tweet(tweet):
 
 """
 With this method, tweets are cleared of stopwords, punctuation, URLs, repeated characters, numbers. 
-Stemming and lemmatization are also applied to tweets.
+Stemming and lemmatization are also applied to tweets. This method is used for sentiment analysis
 Method return DataSeries of cleaned tweets
 """
 def preprocessing(tweets):
@@ -123,7 +150,13 @@ def preprocessing(tweets):
     return pd.Series(cleaned_tweets)
 
 
-"""This method write triples <tweet, sentiment, coordinate> in tsv file specified in the arguments"""
-def dataFrameToTsv(dataset, tsv_file):
-    df = pd.DataFrame(dataset, columns = ["Tweet", "Sentiment", "Coordinate"]) 
-    df.to_csv(tsv_file, sep = "\t", index = False, line_terminator='\n')
+"""
+With this method, tweet are cleared of stopwords, numbers, tags. 
+Stemming and lemmatization are also applied to tweets. This method is used for sentiment analysis
+Method return DataSeries of cleaned tweets
+"""
+def cleaningForNE(tweet):
+    tweet = cleaning_tags(tweet)
+    tweet = tweet.replace("'s", '')
+    tweet = cleaning_stopwords(tweet)
+    return cleaning_numbers(tweet)
