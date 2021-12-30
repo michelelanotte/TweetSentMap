@@ -34,7 +34,9 @@ def read_tsv(tsv):
     return df
 
 
-"""This method write triples <tweet, sentiment, coordinate> in tsv file specified in the arguments"""
+"""
+This method write triples <tweet, sentiment, coordinate> in tsv file specified in the arguments
+"""
 def dataFrameToTsv(dataset, tsv_file):
     df = pd.DataFrame(dataset, columns = ["Tweet", "Sentiment", "Coordinate"]) 
     df.to_csv(tsv_file, sep = "\t", index = False, line_terminator='\n')
@@ -159,4 +161,6 @@ def cleaningForNE(tweet):
     tweet = cleaning_tags(tweet)
     tweet = tweet.replace("'s", '')
     tweet = cleaning_stopwords(tweet)
+    tweet = tweet.replace("...", "")
+    tweet = tweet.replace("â", "")
     return cleaning_numbers(tweet)
