@@ -5,7 +5,7 @@ Created on Tue Dec 28 18:12:39 2021
 @author: Utente
 """
 
-from utility.utils import cleaningForNE, getNE, re, removeDuplicate, getCoordFromPlace  
+from utility.utils import cleaningForNE, getNE, re, removeDuplicate, getCoordFromPlace, getFirstHastag  
 
 """
 This method is based on spacy to perform Named Entities Recognition
@@ -43,5 +43,7 @@ def getCoordinates(tweets):
         #named_entities_list is a list of named entities detected in current tweet
         named_entities_list = computeNamedPlaces(tweet)
         ne_filtered = filteringNE(i, named_entities_list)
+        if not named_entities_filtered:
+            named_entities_filtered = getFirstHastag(tweet)
         #coords.append(getCoordFromPlace(ne_filtered))
     return coords

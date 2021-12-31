@@ -22,6 +22,15 @@ BING_KEY = "AjttQre1RsLFdGceLZYGGUWx0f3NY3ZyJiUU7tbTtWalvxVhSXhGH1kd1mMh0KzB"
 
 
 """
+This method returns first hastag in tweet.
+"""
+def getFirstHastag(tweet):
+    pattern_re = "#\w+"
+    span = re.search(pattern_re, tweet).span()
+    return tweet[span[0]+1 : span[1]]
+
+
+"""
 This method removes the coordinates of places contained in other places. 
 The method returns the list of filtered places and their respective coordinates.
 
