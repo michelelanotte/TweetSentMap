@@ -85,13 +85,23 @@ def getCoordFromPlace(places):
         lat_lon = (position.json['lat'], position.json['lng'])
         coord_couples.append(lat_lon)
         
-    candidate_places, coord_couples = prefilteringCoordinates(places, coord_couples, coord_bbox)
+    if len(coord_couples) > 1:
+        candidate_places, coord_couples = prefilteringCoordinates(places, coord_couples, coord_bbox)
     
-    if len(candidate_places) > 1:
-        #TO DO
-        1)concatenare i luoghi e computare le coordinate
-        2)sfruttare i types dei luoghi
-        3)selezione del primo luogo rilevato
+        if len(candidate_places) > 1:
+            #TO DO
+            1)concatenare i luoghi e computare le coordinate
+            2)sfruttare i types dei luoghi
+            3)selezione del primo luogo rilevato
+        else:
+            coordinate = coord_couples[0]
+            
+    elif len(coord_couples) == 1:
+        coordinate = coord_couples[0]
+    else:
+        coordinate = None
+    
+    return coordinate
     
 
 """
