@@ -5,7 +5,7 @@ Created on Tue Dec 28 18:12:39 2021
 @author: Utente
 """
 
-from utility.utils import cleaningForNE, getNE, re   
+from utility.utils import cleaningForNE, getNE, re, removeDuplicate, getCoordFromPlace  
 
 """
 This method is based on spacy to perform Named Entities Recognition
@@ -26,8 +26,11 @@ def filteringNE(i, name_entities_list):
         pattern_re = "\\x80.*|\\x98.*|\\x81.*|.\\x9f.*|.\\x9c.*|.\\x9d.*|.\\x99.*|@"
         ne = re.sub(pattern_re, ' ', ne).strip()
         if len(ne) > 1:
-            ne_filtered.append(ne)
+            ne_filtered.append(ne.lower())
+            
+    ne_filtered = removeDuplicate(ne_filtered)
     print(i, set(ne_filtered))
+    return ne_filtered
             
 
 def getCoordinates(tweets):
@@ -39,6 +42,6 @@ def getCoordinates(tweets):
         #print(tweet)
         #named_entities_list is a list of named entities detected in current tweet
         named_entities_list = computeNamedPlaces(tweet)
-        filteringNE(i, named_entities_list)
-        coords.append((0, 0))
+        ne_filtered = filteringNE(i, named_entities_list)
+        #coords.append(getCoordFromPlace(ne_filtered))
     return coords

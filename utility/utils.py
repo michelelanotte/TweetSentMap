@@ -11,10 +11,89 @@ import spacy
 import string
 import nltk
 from nltk.tokenize import word_tokenize
+from geopy import Nominatim
+import geocoder
 #from nltk.corpus import stopwords
 
 #stop_words = set(stopwords.words('english'))
 nlp = spacy.load("en_core_web_sm")
+
+BING_KEY = "AjttQre1RsLFdGceLZYGGUWx0f3NY3ZyJiUU7tbTtWalvxVhSXhGH1kd1mMh0KzB"
+
+
+"""
+This method removes the coordinates of places contained in other places. 
+The method returns the list of filtered places and their respective coordinates.
+
+Example: San Francisco is contained in California
+"""
+def prefilteringCoordinates(places, coord_couples, coord_bbox):
+    new_coord_list = []
+    candidate_places = []
+    for i, bbox1 in enumerate(coord_bbox):
+        contain_places = False
+        
+        #check if bbox1 contain another bbox
+        for j, bbox2 in enumerate(coord_bbox):
+            if i != j:             
+                #It's verified that the bbox2 has latitudes between the latitudes of bbox1
+                if bbox1[0][0] <= bbox2[0][0] and bbox2[0][1] <= bbox1[0][1]:
+                    #It's verified that the bbox2 has longitudes between the longitudes of bbox1
+                    if bbox1[1][0] <= bbox2[1][0]  and bbox2[1][1] <= bbox1[1][1]:
+                        contain_places = True
+                        break
+                    
+        #If the i-th bbox does not contain places, then the i-th coordinates are added to the output list
+        if not contain_places:
+            new_coord_list.append(coord_couples[i])
+            candidate_places.append(places[i])
+    return candidate_places, new_coord_list
+
+
+"""
+This method receives as input a list of places and returns the representative coordinate for the tweet 
+with those places
+"""
+def getCoordFromPlace(places):
+    #form of elem in list <lat, lon>
+    coord_couples = []
+    
+    #form of elem in list <(lat_min,lat_max), (lon_min, lon_max)>.
+    coord_bbox = []
+    for place in places:
+        position = geocoder.bing(place, key=BING_KEY)
+        
+        #get the coordinates of the bbox
+        lat_min = position.json['bbox']['southwest'][0]
+        lat_max = position.json['bbox']['northeast'][0]
+        lon_min = position.json['bbox']['southwest'][1]
+        lon_max = position.json['bbox']['northeast'][1]
+        
+        bbox = ((lat_min, lat_max), (lon_min, lon_max))
+        coord_bbox.append(bbox)
+        
+        #get coordinate of the place
+        lat_lon = (position.json['lat'], position.json['lng'])
+        coord_couples.append(lat_lon)
+        
+    candidate_places, coord_couples = prefilteringCoordinates(places, coord_couples, coord_bbox)
+    
+    if len(candidate_places) > 1:
+        #TO DO
+        1)concatenare i luoghi e computare le coordinate
+        2)sfruttare i types dei luoghi
+        3)selezione del primo luogo rilevato
+    
+
+"""
+This method removes duplicates from the input list
+"""
+def removeDuplicate(elements_list):
+    res = []
+    for elem in elements_list:
+        if elem not in res:
+            res.append(elem)
+    return res
 
 
 def getNE(tweet, filters):
