@@ -22,15 +22,15 @@ def update_sentiment_and_coordinate():
         #list of sentiments for each tweet
         sentiments = sentimentAnalysis(tweets)
         #list of coordinates for each tweet. Each coordinates element is of the form <latitude, longitude>
-        coordinates = getCoordinates(tweets) #TO DO
+        coordinates = getCoordinates(tweets)
         dataset = zip(tweets, sentiments, coordinates)
         
         #this file contains triples <tweet, sentiment, coordinates> 
-        with open("dataset/sentiments.tsv", "w", encoding = "ISO-8859-1") as tsv_file:
+        with open("dataset/sentiments_and_coords.tsv", "w", encoding = "ISO-8859-1") as tsv_file:
             dataFrameToTsv(dataset, tsv_file)
         
 
-#DA RIMUOVERE LA RIGA 31!!!
+#DA RIMUOVERE LA RIGA 34!!!
 update_sentiment_and_coordinate()
 
 """

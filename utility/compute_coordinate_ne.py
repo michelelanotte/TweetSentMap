@@ -5,7 +5,8 @@ Created on Tue Dec 28 18:12:39 2021
 @author: Utente
 """
 
-from utility.utils import cleaningForNE, getNE, re, removeDuplicate, getCoordFromPlace, getFirstHastag  
+from utility.utils import cleaningForNE, getNE, re, removeDuplicate, getCoordFromPlace, Heuristic
+
 
 """
 This method is based on spacy to perform Named Entities Recognition
@@ -27,23 +28,29 @@ def filteringNE(i, name_entities_list):
         ne = re.sub(pattern_re, ' ', ne).strip()
         if len(ne) > 1:
             ne_filtered.append(ne.lower())
-            
-    ne_filtered = removeDuplicate(ne_filtered)
-    print(i, set(ne_filtered))
-    return ne_filtered
-            
+    
+    #removing duplicate
+    res = removeDuplicate(ne_filtered)
+        
+    return res
 
+
+"""
+This method receives as input a list of tweets and for each one computes, through the NERSpacy, 
+the places indicated therein. Starting from the detected places, the representative coordinate 
+among all those computed is selected.
+The method returns a list of coordinates, one for each tweet.
+"""
 def getCoordinates(tweets):
     coords = []
     for i, tweet in enumerate(tweets):
         #The removal of punctuation, double characters, url and tag was not considered, as there is an overall 
         #decrease in performance (in precision and recall)
-        tweet = cleaningForNE(tweet)
-        #print(tweet)
+        tweet_cleaned = cleaningForNE(tweet)
+        print(i)
         #named_entities_list is a list of named entities detected in current tweet
-        named_entities_list = computeNamedPlaces(tweet)
+        named_entities_list = computeNamedPlaces(tweet_cleaned)
         ne_filtered = filteringNE(i, named_entities_list)
-        if not named_entities_filtered:
-            named_entities_filtered = getFirstHastag(tweet)
-        #coords.append(getCoordFromPlace(ne_filtered))
+        
+        coords.append(getCoordFromPlace(tweet, ne_filtered, Heuristic.third))
     return coords

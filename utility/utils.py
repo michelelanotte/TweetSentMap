@@ -13,7 +13,15 @@ import nltk
 from nltk.tokenize import word_tokenize
 from geopy import Nominatim
 import geocoder
-#from nltk.corpus import stopwords
+from enum import Enum
+  
+
+#heuristic used for coordinates selection. Permitted values: 1, 2, 3
+class Heuristic(Enum):
+    first = 1
+    second = 2
+    third = 3
+    
 
 #stop_words = set(stopwords.words('english'))
 nlp = spacy.load("en_core_web_sm")
@@ -22,19 +30,22 @@ BING_KEY = "AjttQre1RsLFdGceLZYGGUWx0f3NY3ZyJiUU7tbTtWalvxVhSXhGH1kd1mMh0KzB"
 
 
 """
-This method returns first hastag in tweet.
+This method returns list of hastag in tweet.
 """
-def getFirstHastag(tweet):
-    pattern_re = "#\w+"
-    span = re.search(pattern_re, tweet).span()
-    return tweet[span[0]+1 : span[1]]
+def getHastags(tweet):
+    res = []
+    if "#" in tweet:
+        pattern_re = "#\w+"
+        res = re.findall(pattern_re, tweet)
+    return res
 
 
 """
-This method removes the coordinates of places contained in other places. 
+This method removes the coordinates of places that contain other places. 
+This way only the most specific places will be kept.
 The method returns the list of filtered places and their respective coordinates.
 
-Example: San Francisco is contained in California
+Example: San Francisco is contained in California. The method returns San Francisco
 """
 def prefilteringCoordinates(places, coord_couples, coord_bbox):
     new_coord_list = []
@@ -59,48 +70,81 @@ def prefilteringCoordinates(places, coord_couples, coord_bbox):
     return candidate_places, new_coord_list
 
 
-"""
-This method receives as input a list of places and returns the representative coordinate for the tweet 
-with those places
-"""
-def getCoordFromPlace(places):
-    #form of elem in list <lat, lon>
-    coord_couples = []
-    
-    #form of elem in list <(lat_min,lat_max), (lon_min, lon_max)>.
-    coord_bbox = []
-    for place in places:
-        position = geocoder.bing(place, key=BING_KEY)
+def sendRequestBingApi(place):
+    coordinate = None
+    bbox = None
+    position = geocoder.bing(place, key=BING_KEY) 
+    if position.json:
+        #get coordinate of the place
+        coordinate = (position.json['lat'], position.json['lng'])
         
         #get the coordinates of the bbox
         lat_min = position.json['bbox']['southwest'][0]
         lat_max = position.json['bbox']['northeast'][0]
         lon_min = position.json['bbox']['southwest'][1]
-        lon_max = position.json['bbox']['northeast'][1]
-        
+        lon_max = position.json['bbox']['northeast'][1]     
         bbox = ((lat_min, lat_max), (lon_min, lon_max))
-        coord_bbox.append(bbox)
-        
-        #get coordinate of the place
-        lat_lon = (position.json['lat'], position.json['lng'])
-        coord_couples.append(lat_lon)
-        
-    if len(coord_couples) > 1:
-        candidate_places, coord_couples = prefilteringCoordinates(places, coord_couples, coord_bbox)
     
-        if len(candidate_places) > 1:
-            #TO DO
-            1)concatenare i luoghi e computare le coordinate
-            2)sfruttare i types dei luoghi
-            3)selezione del primo luogo rilevato
-        else:
-            coordinate = coord_couples[0]
+    return coordinate, bbox
+    
+
+"""
+This method receives as input a list of places and returns the representative coordinate for the tweet 
+with those places.
+"""
+def getCoordFromPlace(tweet, places, heuristic):
+    coordinate = None
             
-    elif len(coord_couples) == 1:
-        coordinate = coord_couples[0]
+    if heuristic == Heuristic.third:
+        if places:
+            place = " ".join(places)
+            coordinate, _ = sendRequestBingApi(place)
     else:
-        coordinate = None
+        #form of elem in list <(lat_min,lat_max), (lon_min, lon_max)>.
+        coord_bbox = []
+        
+        #form of elem in list <lat, lon>
+        coord_couples = []
+        for place in places:
+            lat_lon, bbox = sendRequestBingApi(place)
+            
+            #It occurs if the place has geographic coordinates. The check on the bbox is useless as the first 
+            #condition is sufficient to guarantee its existence for that place
+            if lat_lon is not None:
+                coord_bbox.append(bbox)
+                coord_couples.append(lat_lon)
+            
+        if len(coord_couples) > 1:
+            candidate_places, coord_couples = prefilteringCoordinates(places, coord_couples, coord_bbox)
+        
+            #If there are coordinates for more than one place, 
+            #a heuristic is performed that allows you to keep coordinates of only one place
+            if len(coord_couples) > 1:
+                #Selection of the first place detected in coord_couples, 
+                #as well as the first place detected in the tweet
+                if heuristic == Heuristic.first:
+                    coordinate = coord_couples[0]
+                     
+                #Concatenation of candidate places with subsequent new research
+                elif heuristic == Heuristic.second:
+                    place = " ".join(candidate_places)
+                    coordinate, _ = sendRequestBingApi(place)
+            elif len(coord_couples) == 1:
+                coordinate = coord_couples[0]
+                
+        elif len(coord_couples) == 1:
+            coordinate = coord_couples[0]
     
+    #If coordinates is still None, then the hastags of the current tweet are examined to find one 
+    #that represents a place
+    if coordinate is None:
+        hastags = getHastags(tweet)
+        for i in range(0, len(hastags)):
+            place = hastags[i].replace("#", "")
+            coordinate, _ = sendRequestBingApi(place)
+            if coordinate is not None:
+                break
+              
     return coordinate
     
 
@@ -257,8 +301,9 @@ Method return DataSeries of cleaned tweets
 """
 def cleaningForNE(tweet):
     tweet = cleaning_tags(tweet)
-    tweet = tweet.replace("'s", '')
+    tweet = tweet.replace("’s", '')
     tweet = cleaning_stopwords(tweet)
     tweet = tweet.replace("...", "")
     tweet = tweet.replace("â", "")
+    tweet = tweet.replace("#", "")
     return cleaning_numbers(tweet)
