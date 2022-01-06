@@ -96,7 +96,7 @@ def getNewCoordinates(coordinate, coords_added):
             return coordinate
 
 
-def getDataframeByCity(dataset, city, dict_coordinates_bbox): 
+def getDataframeByCity(city, dataset, dict_coordinates_bbox): 
     data = []
     
     #List of <lat, lon> pairs used to check if there are already other tweets in a given position
