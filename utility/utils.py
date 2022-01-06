@@ -11,7 +11,7 @@ import spacy
 import string
 import nltk
 from nltk.tokenize import word_tokenize
-from geopy import Nominatim
+import random
 import geocoder
 from enum import Enum
   
@@ -27,6 +27,113 @@ class Heuristic(Enum):
 nlp = spacy.load("en_core_web_sm")
 
 BING_KEY = "AjttQre1RsLFdGceLZYGGUWx0f3NY3ZyJiUU7tbTtWalvxVhSXhGH1kd1mMh0KzB"
+
+
+def setMidpointAndBBox(cities):  
+    dict_coordinates_bbox = dict()
+    dict_coordinates_midpoint = dict()
+    """for city in cities:
+        coordinate, bbox = sendRequestBingApi(city)
+        dict_coordinates_midpoint[city] = coordinate
+        dict_coordinates_bbox[city] = bbox"""
+        
+    dict_coordinates_midpoint["wellington"] = (-41.285099029541016, 174.7760009765625)
+    dict_coordinates_midpoint["san francisco"] = (37.78007888793945, -122.42015838623047)
+    dict_coordinates_midpoint["new york"] = (40.71304702758789, -74.00723266601562)
+    dict_coordinates_midpoint["sydney"] = (-33.873199462890625, 151.2095947265625)
+    dict_coordinates_midpoint["london"] = (51.500152587890625, -0.12623600661754608)
+    
+    dict_coordinates_bbox["wellington"] = ((-41.36246109008789, -41.143531799316406), 
+                                           (174.61306762695312, 174.89541625976562))
+    dict_coordinates_bbox["san francisco"] = ((37.703773498535156, 37.86368179321289),
+                                              (-122.52021789550781, -122.35164642333984))
+    dict_coordinates_bbox["new york"] = ((40.363765716552734, 41.0565299987793),
+                                         (-74.74592590332031, -73.26721954345703))  
+    dict_coordinates_bbox["sydney"] = ((-34.1965217590332, -33.374847412109375),
+                                       (150.5858612060547, 151.35153198242188))
+    dict_coordinates_bbox["london"] = ((51.171478271484375, 51.86424255371094),
+                                       (-1.0028589963912964, 0.7984259724617004))
+
+    return dict_coordinates_midpoint, dict_coordinates_bbox
+
+
+"""
+This method returns true if the coordinates fall within the input city bbox, false otherwise.
+"""
+def checkCoordinateInBBox(coordinate, city, dict_coordinates_bbox):
+    lat = coordinate[0]
+    lon = coordinate[1]
+    
+    lat_min = dict_coordinates_bbox[city][0][0]
+    lat_max = dict_coordinates_bbox[city][0][1]
+    lon_min = dict_coordinates_bbox[city][1][0]
+    lon_max = dict_coordinates_bbox[city][1][1]
+    
+    if (lat_min <= lat <= lat_max) and (lon_min <= lon <= lon_max):
+        return True
+    else:
+        return False
+
+
+"""
+This method checks if there is already a tweet at the location scanned by the coordinate input.
+"""
+def  checkDuplicateCoordinates(coordinate, coords_added): 
+    for coord in coords_added:
+        if (coordinate[0] == coord[0]) and (coordinate[1] == coord[1]):
+            return True
+    return False
+
+
+def getNewCoordinates(coordinate, coords_added):
+    lat_min = coordinate[0] - 0.0025
+    lat_max = coordinate[0] + 0.0025
+    lon_min = coordinate[1] - 0.0025
+    lon_max = coordinate[1] + 0.0025
+    while(True):
+        coordinate = (random.uniform(lat_min, lat_max), random.uniform(lon_min, lon_max))
+        if not checkDuplicateCoordinates(coordinate, coords_added):
+            return coordinate
+
+
+def getDataframeByCity(dataset, city, dict_coordinates_bbox): 
+    data = []
+    
+    #List of <lat, lon> pairs used to check if there are already other tweets in a given position
+    coords_added = []
+    for index, row in dataset.iterrows():
+        #check if coordinate is undefined
+        if not isinstance(row["Coordinate"], float):
+            coordinate_as_str = row["Coordinate"].replace("(", "").replace(")", "")
+            index_to_split = coordinate_as_str.find(",")
+            lat = float(coordinate_as_str[:index_to_split])
+            lon = float(coordinate_as_str[index_to_split+1:])
+            coordinate = (lat, lon)
+            if checkCoordinateInBBox(coordinate, city, dict_coordinates_bbox):
+                #Check useful to prevent multiple tweets from falling into the same position on the map
+                if checkDuplicateCoordinates(coordinate, coords_added):
+                    #If there is already another tweet in that position, a coordinate very close to that position is computed
+                    coordinate = getNewCoordinates(coordinate, coords_added)
+                coords_added.append(coordinate)
+                tweet = cleaning_URLs(row["Tweet"])
+                if len(tweet) > 100:
+                    first_space_index = tweet.find(" ", 110)
+                    if first_space_index != -1:
+                        tweet = tweet[:first_space_index] + "..."
+                data.append([tweet, row["Sentiment"], coordinate[0], coordinate[1]])         
+    df = pd.DataFrame(data, columns = ["Tweet", "Sentiment", "Lat", "Lon"])
+    
+    return df
+
+
+
+def findRowByCoordinate(df, coords):
+    for index, row in df.iterrows():
+        lat = row["Lat"]
+        lon = row["Lon"]
+        if (coords[0] == lat) and (coords[1] == lon):
+            return row
+    return None
 
 
 """
@@ -171,11 +278,6 @@ def getNE(tweet, filters):
     return entities
 
 
-def read_tsv(tsv):
-    df = pd.read_csv("predictions/" + tsv, delimiter = "\t", encoding='cp1252', names = ["Tweet", "Sentiment"])
-    return df
-
-
 """
 This method write triples <tweet, sentiment, coordinate> in tsv file specified in the arguments
 """
@@ -239,7 +341,7 @@ def cleaning_repeating_char(text):
 
 def cleaning_URLs(text):
     pattern_re = "https?:\S+|http?:\S|[^A-Za-z0-9]+"
-    return re.sub(pattern_re, ' ', text)
+    return re.sub(pattern_re, ' ', str(text))
 
 
 def cleaning_tags(text):
