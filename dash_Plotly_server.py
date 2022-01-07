@@ -21,7 +21,7 @@ from dash import dcc, html, callback_context
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-app = dash.Dash("Sentiment On Place Twitter")
+app = dash.Dash("Sentiment On Place Twitter", external_stylesheets=[dbc.themes.SPACELAB])
 view_info = ViewSOPInfo()
 
 
