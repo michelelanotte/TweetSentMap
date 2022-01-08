@@ -25,7 +25,7 @@ app = dash.Dash("Sentiment On Place Twitter", external_stylesheets=[dbc.themes.S
 view_info = ViewSOPInfo()
 
 
-def view_page():
+def viewPage():
     buttons = html.Div(
         [
             dbc.Button("Wellington", id="city0", outline=True, color="info", className="me-1 btn-menu"),
@@ -78,54 +78,6 @@ def view_page():
 
 
 """
-This method, starting from the input city, builds the map with the tweets of that city and the pie diagram 
-with the percentages of positive tweets and negative.
-"""
-def create_map_bokeh(city):
-    df = view_info.get_df_selected_city()
-    coords = view_info.get_dict_coords_midpoint()[city]
-    midpoint_lat = coords[0]
-    midpoint_long = coords[1]
-    
-    #Size of points in the map
-    size = df.shape[0]
-    df["Size"] = [5 for i in range(size)]
-    view_info.set_df_selected_city(df)
-    
-    fig_map = set_bbox(df, midpoint_lat, midpoint_long)
-       
-    #plot percentuale sentiment positivi e negativi
-    fig_pie = px.pie(df, names="Sentiment", color='Sentiment', height=380, color_discrete_map={"POSITIVE": "#1688ED",
-                                                                                               "NEGATIVE": "#F84858"})
-    fig_pie.update_traces(hovertemplate=None, showlegend=False)
-    fig_pie.update_layout(title={
-        'text' : 'Sentiments percentage',
-        'x':0.5,
-        'y':0.9,
-        'xanchor': 'center',
-        'yanchor': 'top'
-    })
-     
-    return fig_map, fig_pie
-
-    
-def set_bbox(source, midpoint_lat, midpoint_long):
-    token = "pk.eyJ1IjoibWxhbm90dGUxNSIsImEiOiJja3c0dmR6d3MwODhmMnVyaDE2aHpxMG11In0.Z9815N56yl0BfjRIiaFUkA"
-    px.set_mapbox_access_token(token)
-    fig_map = px.scatter_mapbox(source, hover_name="Tweet", lat="Lat", lon="Lon",
-                            color="Sentiment", zoom=10, size="Size", size_max=10,
-                            center={"lat": midpoint_lat, "lon": midpoint_long}, color_discrete_map={"POSITIVE": "#1688ED",
-                                                                                               "NEGATIVE": "#F84858"})
-    #fig_map.update_layout(mapbox_style="open-street-map")
-    fig_map.update_layout(margin={"r":10,"t":20,"l":10,"b":1})
-    fig_map.update_layout(legend=dict(
-        title="Colors for sentiments:", orientation="h", y=1, yanchor="bottom", x=0.5, xanchor="center"
-    ))
-    fig_map.update_traces(mode="markers", hovertemplate=None) 
-    return fig_map
-
-
-"""
 This method is used to manage two events: 
     1) selection of a city, in this case the map of that city and the percentages of negative and 
         positive sentiment will be shown;
@@ -140,7 +92,7 @@ This method is used to manage two events:
     [Input(f"city{i}", "n_clicks") for i in range(0, 5)],
     Input("bbox", "selectedData")  #acquisition of the points included in the selected box or in the selected period
 )
-def update_for_callback(city1, city2, city3, city4, city5, selectedData):
+def updateByCallback(city1, city2, city3, city4, city5, selectedData):
     title = view_info.get_title()
     bbox = view_info.get_fig_map()
     fig_pie = view_info.get_fig_pie()
@@ -149,14 +101,14 @@ def update_for_callback(city1, city2, city3, city4, city5, selectedData):
     if changed_id[:4] == "city":
         #Trigger selection of a city
         city = view_info.get_city_by_index(int(changed_id[4:5]))
-        title, bbox, fig_pie, fig_selected_area = display_city_map(city)
+        title, bbox, fig_pie, fig_selected_area = displayCityMap(city)
     elif changed_id[:4] == "bbox":
             #Trigger selection of an area of ​​the current city
-            fig_pie, fig_selected_area = display_selected_data(selectedData["points"])
+            fig_pie, fig_selected_area = displaySelectedData(selectedData["points"])
     return title, bbox, fig_pie, fig_selected_area
         
 
-def display_selected_data(selected_points):
+def displaySelectedData(selected_points):
     df = view_info.get_df_selected_city()
     data = []
     for i in range(len(selected_points)):
@@ -169,39 +121,82 @@ def display_selected_data(selected_points):
             data.append(row)
     
     selected_df = pd.DataFrame(data, columns = ["Tweet", "Sentiment", "Lat", "Lon", "Size"])
-    fig_pie = px.pie(selected_df, names = "Sentiment", color = "Sentiment", color_discrete_map={"POSITIVE": "#1688ED",
-                                                                                               "NEGATIVE": "#F84858"})
-    fig_pie.update_traces(hovertemplate = None, showlegend = False)  
-    fig_pie.update_layout(title={"text" : "Sentiments percentage", 
-                                 "x" : 0.5, 
-                                 "y" : 0.9, 
-                                 "xanchor" : "center", 
-                                 "yanchor": "top"}
-    )
+    
+    fig_pie = computePlotlyPie(selected_df)
               
-    """********************Display of the coordinates selected in the bbox**************************"""    
-    fig_selected_area = px.scatter_mapbox(selected_df, lat="Lat", lon="Lon", hover_name="Tweet",
-                            color="Sentiment", size="Size", zoom=14, size_max=10, color_discrete_map={"POSITIVE": "#1688ED",
-                                                                                               "NEGATIVE": "#F84858"}) 
-    fig_selected_area.update_layout(margin={"r":10,"t":20,"l":10,"b":1})
-    fig_selected_area.update_layout(legend=dict(
-        title = "Colors for sentiments:", orientation="h", y=1, yanchor="bottom", x=0.5, xanchor="center"
-    ))
-    fig_selected_area.update_traces(mode="markers", hovertemplate=None) 
+    #Map creation for selected tweets
+    fig_selected_area = computeMapbox(selected_df, zoom=14)
+    view_info.set_fig_selected_area(fig_selected_area)
 
     return fig_pie, fig_selected_area
     
 
-def display_city_map(city):  
+def displayCityMap(city):  
     df = getDataframeByCity(city, view_info.get_dataset(), view_info.get_dict_coords_bbox())
     view_info.set_df_selected_city(df)
-    fig_map, fig_pie = create_map_bokeh(city) 
+    fig_map, fig_pie = createMapBokeh(city) 
     view_info.set_fig_map(fig_map)
     view_info.set_fig_selected_area(fig_map)
     view_info.set_fig_pie(fig_pie)
     title = "Plotting Sentiments for " + city.capitalize() + " city"
     view_info.set_title(title)
     return title, fig_map, fig_pie, fig_map
+
+
+"""
+This method, starting from the input city, builds the map with the tweets of that city and the pie diagram 
+with the percentages of positive tweets and negative.
+"""
+def createMapBokeh(city):
+    df = view_info.get_df_selected_city()
+    coords = view_info.get_dict_coords_midpoint()[city]
+    midpoint_lat = coords[0]
+    midpoint_long = coords[1]
+    
+    #Size of points in the map
+    size = df.shape[0]
+    df["Size"] = [5 for i in range(size)]
+    view_info.set_df_selected_city(df)
+    
+    fig_map = computeMapbox(df, midpoint_lat, midpoint_long)
+       
+    #Positive and negative sentiment percentage plot
+    fig_pie = computePlotlyPie(df)
+     
+    return fig_map, fig_pie
+
+
+def computeMapbox(source, midpoint_lat=None, midpoint_lon=None, zoom=10):
+    token = "pk.eyJ1IjoibWxhbm90dGUxNSIsImEiOiJja3c0dmR6d3MwODhmMnVyaDE2aHpxMG11In0.Z9815N56yl0BfjRIiaFUkA"
+    center = {}
+    if (midpoint_lat is not None) and (midpoint_lon is not None):
+        center = {"lat": midpoint_lat, "lon": midpoint_lon}
+    px.set_mapbox_access_token(token)
+    fig_map = px.scatter_mapbox(source, hover_name="Tweet", lat="Lat", lon="Lon",
+                            color="Sentiment", zoom=zoom, size="Size", size_max=10,
+                            center=center, color_discrete_map={"POSITIVE": "#1688ED",
+                                                               "NEGATIVE": "#F84858"})
+    #fig_map.update_layout(mapbox_style="open-street-map")
+    fig_map.update_layout(margin={"r":10,"t":20,"l":10,"b":1})
+    fig_map.update_layout(legend=dict(
+        title="Colors for sentiments:", orientation="h", y=1, yanchor="bottom", x=0.5, xanchor="center"
+    ))
+    fig_map.update_traces(mode="markers", hovertemplate=None) 
+    return fig_map
+
+
+def computePlotlyPie(df):
+    fig_pie = px.pie(df, names="Sentiment", color='Sentiment', height=380, color_discrete_map={"POSITIVE": "#1688ED",
+                                                                                               "NEGATIVE": "#F84858"})
+    fig_pie.update_traces(hovertemplate=None, showlegend=False)
+    fig_pie.update_layout(title={
+        'text' : 'Sentiments percentage',
+        'x':0.5,
+        'y':0.9,
+        'xanchor': 'center',
+        'yanchor': 'top'
+    })
+    return fig_pie
 
 
 """
@@ -221,7 +216,7 @@ def setViewInfo():
     city = locality[0]
     #get tweets found in city area
     view_info.set_df_selected_city(getDataframeByCity(city, view_info.get_dataset(), view_info.get_dict_coords_bbox()))
-    fig_map, fig_pie = create_map_bokeh(city) 
+    fig_map, fig_pie = createMapBokeh(city) 
     view_info.set_fig_map(fig_map)
     view_info.set_fig_selected_area(fig_map)
     view_info.set_fig_pie(fig_pie)
@@ -233,6 +228,6 @@ def setViewInfo():
 """********************************START SERVER********************************"""
 view_info = setViewInfo()    
 if __name__ == "__main__":
-    view_page()
+    viewPage()
     app.run_server(debug=True)
     #app.run_server(debug=False,dev_tools_ui=False,dev_tools_props_check=False)
