@@ -1,6 +1,6 @@
 class ViewSOPInfo:
     def __init__(self):
-        self.__cities = ["wellington", "new york", "san francisco", "sydney", "london"]
+        self.__cities = ["wellington", "san francisco", "new york", "sydney", "london"]
         self.__dataset = None
         self.__df_selected_city = None
         
@@ -66,4 +66,7 @@ class ViewSOPInfo:
     
     def get_cities(self):
         return self.__cities
+    
+    def get_city_by_index(self, i):
+        return self.__cities[i]
         
