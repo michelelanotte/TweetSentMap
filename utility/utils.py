@@ -108,7 +108,7 @@ def getDataframeByCity(city, dataset, dict_coordinates_bbox):
     
     #List of <lat, lon> pairs used to check if there are already other tweets in a given position
     coords_added = []
-    for index, row in dataset.iterrows():
+    for _, row in dataset.iterrows():
         #check if coordinate is undefined
         if not isinstance(row["Coordinate"], float):
             coordinate_as_str = row["Coordinate"].replace("(", "").replace(")", "")
@@ -298,7 +298,23 @@ def splitTweetsBySentiment(df):
         else:
             positive.append(df['Tweet'][ind])
     return pd.Series(positive), pd.Series(negative)
-    
+
+
+"""
+This method receives as input: a dataframe containing the significant tweets for each city, a city and a sentiment. 
+Based on the city and sentiment, the associated significant tweet is returned.
+"""
+def getMeaningfulTweet(meanful_tweets_df, city, sentiment):
+    tweet = ""
+    for _, row in meanful_tweets_df.iterrows():
+        if row['City'] == city:
+            if sentiment == 1:
+                tweet = row['Meaningful positive']
+            else:
+                tweet = row['Meaningful negative']
+            break
+    return tweet[2:len(tweet)-2]
+ 
 
 """
 This method write triples <tweet, sentiment, coordinate> in tsv file specified in the arguments

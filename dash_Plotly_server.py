@@ -12,7 +12,7 @@ Created on Thu Nov 18 11:18:56 2021
 @author: Utente
 """
 
-from utility.utils import pd, setMidpointAndBBox, getDataframeByCity, findRowByCoordinate
+from utility.utils import pd, setMidpointAndBBox, getDataframeByCity, findRowByCoordinate, getMeaningfulTweet
 from utility.viewSOPInfo import ViewSOPInfo
 import plotly.express as px
 
@@ -56,25 +56,33 @@ def viewPage():
         html.Div([
             html.Div([
                 dcc.Graph(id="bbox", figure=view_info.get_fig_map())
-            ], className="bbox-div"
+            ], className="bbox-div",
+            style={"height": "100%"}
             ),
             html.Div([
-                dcc.Graph(id="filter-percentage-sentiments", figure=view_info.get_fig_pie(), 
-                          config={'displayModeBar': False}, style={"textAlign": "center"})
-                ],
-                style={
-                    "display": "inline-block",
-                    "width": "25%",
-                    "marginLeft": "10px",
-                    "verticalAlign": "top",
-                })
-        ]),
-        html.Div([
+                html.Div([
+                    dcc.Graph(id="filter-percentage-sentiments", figure=view_info.get_fig_pie(), 
+                              config={'displayModeBar': False}, style={"textAlign": "center"})
+                ]),
+                html.Div([
+                    html.H6("Relevant positive tweet:"),
+                    html.P(view_info.get_positive_relevant_tweet(), id="positive_tweet"),
+                    html.H6("Relevant negative tweet:"),
+                    html.P(view_info.get_negative_relevant_tweet(), id="negative_tweet"),
+                ])
+            ],
+            style={
+                "display": "inline-block",
+                "width": "27%",
+                "verticalAlign": "top"
+            }),
+            html.Div([
                 html.H1("Selected area", className="subtitle"),
                 dcc.Graph(id="selected-area", figure=view_info.get_fig_selected_area(), config={"displayModeBar": False})
             ], className="selected-area-div"
-        )
-    ])   
+            )
+        ])
+    ])
 
 
 """
@@ -89,6 +97,8 @@ This method is used to manage two events:
     Output("bbox", "figure"),
     Output("filter-percentage-sentiments", "figure"), 
     Output("selected-area", "figure"), 
+    Output("positive_tweet", "children"),
+    Output("negative_tweet", "children"),
     [Input(f"city{i}", "n_clicks") for i in range(0, 5)],
     Input("bbox", "selectedData")  #acquisition of the points included in the selected box or in the selected period
 )
@@ -97,15 +107,17 @@ def updateByCallback(city1, city2, city3, city4, city5, selectedData):
     bbox = view_info.get_fig_map()
     fig_pie = view_info.get_fig_pie()
     fig_selected_area = view_info.get_fig_selected_area()
+    positive_tweet = view_info.get_positive_relevant_tweet()
+    negative_tweet = view_info.get_negative_relevant_tweet()
     changed_id = [p["prop_id"].replace(".n_clicks", "") for p in callback_context.triggered][0]
     if changed_id[:4] == "city":
         #Trigger selection of a city
         city = view_info.get_city_by_index(int(changed_id[4:5]))
-        title, bbox, fig_pie, fig_selected_area = displayCityMap(city)
+        title, bbox, fig_pie, fig_selected_area, positive_tweet, negative_tweet = displayCityMap(city)
     elif changed_id[:4] == "bbox":
             #Trigger selection of an area of ​​the current city
             fig_pie, fig_selected_area = displaySelectedData(selectedData["points"])
-    return title, bbox, fig_pie, fig_selected_area
+    return title, bbox, fig_pie, fig_selected_area, positive_tweet, negative_tweet
         
 
 def displaySelectedData(selected_points):
@@ -140,7 +152,13 @@ def displayCityMap(city):
     view_info.set_fig_pie(fig_pie)
     title = "Plotting Sentiments for " + city.capitalize() + " city"
     view_info.set_title(title)
-    return title, fig_map, fig_pie, fig_map
+    meaningful_tweets_file = "dataset/meaningful_tweets.tsv" 
+    meaningful_tweets_df = pd.read_csv(meaningful_tweets_file, sep = "\t", encoding = "ISO-8859-1", header = 0)
+    positive_tweet = getMeaningfulTweet(meaningful_tweets_df, city, 1)
+    negative_tweet = getMeaningfulTweet(meaningful_tweets_df, city, 0)
+    view_info.set_positive_relevant_tweet(positive_tweet)
+    view_info.set_negative_relevant_tweet(negative_tweet)
+    return title, fig_map, fig_pie, fig_map, positive_tweet, negative_tweet
 
 
 """
@@ -221,6 +239,13 @@ def setViewInfo():
     view_info.set_fig_selected_area(fig_map)
     view_info.set_fig_pie(fig_pie)
     view_info.set_title("Plotting Sentiments for " + city.capitalize() + " city")
+    
+    meaningful_tweets_file = "dataset/meaningful_tweets.tsv" 
+    meaningful_tweets_df = pd.read_csv(meaningful_tweets_file, sep = "\t", encoding = "ISO-8859-1", header = 0)
+    positive_tweet = getMeaningfulTweet(meaningful_tweets_df, city, 1)
+    negative_tweet = getMeaningfulTweet(meaningful_tweets_df, city, 0)
+    view_info.set_positive_relevant_tweet(positive_tweet)
+    view_info.set_negative_relevant_tweet(negative_tweet)
     
     return view_info
     

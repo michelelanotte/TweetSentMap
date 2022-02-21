@@ -17,7 +17,7 @@ from utility.pageRankTFIDF import computeTextRank
 
 
 def compute_meaninful_tweets():
-    dataset = pd.read_csv("dataset/sentiments_and_coords.tsv", sep = "\t", encoding = "ISO-8859-1", header = 0)   
+    dataset = pd.read_csv("dataset/sentiments_and_coords.tsv", sep = "\t", encoding = "ISO-8859-1", header = 0)  
     #compute text rank for cities
     dict_coordinates_midpoint, dict_coordinates_bbox = readMidpoint_and_Bbox("dataset/coords_localities.tsv")
     meaningful_tweets_positive_list = list()
@@ -38,23 +38,22 @@ def compute_meaninful_tweets():
         dataFrameToTsv(tweets_rank_df, tsv_file, columns_name)   
 
 
-def update_sentiment_and_coordinate():
-    columns_name = ["Tweet", "Sentiment", "Coordinate"]
-    
+def update_sentiment_and_coordinate():   
     #this file contains SOP tweets
     with open("dataset/tweets_dataset.txt", "r", encoding = "ISO-8859-1") as file:
         tweets = file.readlines()
     
     if tweets:
         #list of sentiments for each tweet
-        """sentiments = sentimentAnalysis(tweets)
+        sentiments = sentimentAnalysis(tweets)
         #list of coordinates for each tweet. Each coordinates element is of the form <latitude, longitude>
         coordinates = getCoordinates(tweets)
         dataset = zip(tweets, sentiments, coordinates)
         
         #this file contains triples <tweet, sentiment, coordinates> 
         with open("dataset/sentiments_and_coords.tsv", "w", encoding = "ISO-8859-1") as tsv_file:
-            dataFrameToTsv(dataset, tsv_file, columns_name)"""
+            columns_name = ["Tweet", "Sentiment", "Coordinate"]
+            dataFrameToTsv(dataset, tsv_file, columns_name)
         
         compute_meaninful_tweets()    
         

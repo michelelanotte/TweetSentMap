@@ -15,6 +15,9 @@ class ViewSOPInfo:
         self.__fig_pie = None
         self.__fig_selected_area = None
         self.__title = ""
+        self.__negative_tweet = ""
+        self.__positive_tweet = ""
+        
         
     def set_dataset(self, dataset):
             self.__dataset = dataset
@@ -63,6 +66,18 @@ class ViewSOPInfo:
           
     def get_title(self):
         return self.__title
+
+    def set_negative_relevant_tweet(self, tweet):
+        self.__negative_tweet = tweet
+        
+    def get_negative_relevant_tweet(self):
+        return self.__negative_tweet
+    
+    def set_positive_relevant_tweet(self, tweet):
+        self.__positive_tweet = tweet
+        
+    def get_positive_relevant_tweet(self):
+        return self.__positive_tweet
     
     def get_cities(self):
         return self.__cities
