@@ -1,0 +1,2 @@
+il file coords_localities.tsv contiene righe nella forma:
+<city, midpoint, bbox_lat_min_max, bbox_lon_min_max>

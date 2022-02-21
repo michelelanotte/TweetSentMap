@@ -29,30 +29,37 @@ nlp = spacy.load("en_core_web_sm")
 BING_KEY = "AjttQre1RsLFdGceLZYGGUWx0f3NY3ZyJiUU7tbTtWalvxVhSXhGH1kd1mMh0KzB"
 
 
-def setMidpointAndBBox(cities):  
-    dict_coordinates_bbox = dict()
+"""
+This method read midpoint and bbox for each city in input file.tsv
+"""
+def readMidpoint_and_Bbox(filename):
     dict_coordinates_midpoint = dict()
-    """for city in cities:
+    dict_coordinates_bbox = dict()
+    localities_info = pd.read_csv(filename, sep = "\t", encoding = "utf-8", header = 0)
+    for row in localities_info.iterrows():
+        city = row[1]['city']
+        midpoint_str = row[1]['midpoint'].split(", ")
+        bbox_lat_str = row[1]['bbox_lat'].split(", ")
+        bbox_lon_str = row[1]['bbox_lon'].split(", ")
+        midpoint = (float(midpoint_str[0]), float(midpoint_str[1]))
+        bbox_lat = (float(bbox_lat_str[0]), float(bbox_lat_str[1]))
+        bbox_lon = (float(bbox_lon_str[0]), float(bbox_lon_str[1]))
+        
+        dict_coordinates_midpoint[city] = midpoint
+        dict_coordinates_bbox[city] = (bbox_lat, bbox_lon)
+    return dict_coordinates_midpoint, dict_coordinates_bbox
+        
+
+def setMidpointAndBBox(cities, filename):   
+    #get midpoint and bbox for cities using geocoder
+    """dict_coordinates_bbox = dict()
+    dict_coordinates_midpoint = dict()
+    for city in cities:
         coordinate, bbox = sendRequestBingApi(city)
         dict_coordinates_midpoint[city] = coordinate
         dict_coordinates_bbox[city] = bbox"""
-        
-    dict_coordinates_midpoint["wellington"] = (-41.285099029541016, 174.7760009765625)
-    dict_coordinates_midpoint["san francisco"] = (37.78007888793945, -122.42015838623047)
-    dict_coordinates_midpoint["new york"] = (40.71304702758789, -74.00723266601562)
-    dict_coordinates_midpoint["sydney"] = (-33.873199462890625, 151.2095947265625)
-    dict_coordinates_midpoint["london"] = (51.500152587890625, -0.12623600661754608)
     
-    dict_coordinates_bbox["wellington"] = ((-41.36246109008789, -41.143531799316406), 
-                                           (174.61306762695312, 174.89541625976562))
-    dict_coordinates_bbox["san francisco"] = ((37.703773498535156, 37.86368179321289),
-                                              (-122.52021789550781, -122.35164642333984))
-    dict_coordinates_bbox["new york"] = ((40.363765716552734, 41.0565299987793),
-                                         (-74.74592590332031, -73.26721954345703))  
-    dict_coordinates_bbox["sydney"] = ((-34.1965217590332, -33.374847412109375),
-                                       (150.5858612060547, 151.35153198242188))
-    dict_coordinates_bbox["london"] = ((51.171478271484375, 51.86424255371094),
-                                       (-1.0028589963912964, 0.7984259724617004))
+    dict_coordinates_midpoint, dict_coordinates_bbox = readMidpoint_and_Bbox(filename)  
 
     return dict_coordinates_midpoint, dict_coordinates_bbox
 
@@ -279,10 +286,25 @@ def getNE(tweet, filters):
 
 
 """
+This method receives in input a dataframe of tweets info and returns in output two series 
+containing respectively only positive tweets and only negative tweets
+"""
+def splitTweetsBySentiment(df):
+    negative = list()
+    positive = list()
+    for ind in df.index:
+        if df['Sentiment'][ind] == "NEGATIVE":
+            negative.append(df['Tweet'][ind])
+        else:
+            positive.append(df['Tweet'][ind])
+    return pd.Series(positive), pd.Series(negative)
+    
+
+"""
 This method write triples <tweet, sentiment, coordinate> in tsv file specified in the arguments
 """
-def dataFrameToTsv(dataset, tsv_file):
-    df = pd.DataFrame(dataset, columns = ["Tweet", "Sentiment", "Coordinate"]) 
+def dataFrameToTsv(dataset, tsv_file, columns_name):
+    df = pd.DataFrame(dataset, columns = columns_name) 
     df.to_csv(tsv_file, sep = "\t", index = False, line_terminator='\n')
 
 

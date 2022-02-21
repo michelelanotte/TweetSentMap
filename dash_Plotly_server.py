@@ -205,7 +205,7 @@ This method sets the initial parameters useful for a first visualization of the 
 def setViewInfo():
     locality = view_info.get_cities()
     
-    dict_coords_midpoint, dict_coords_bbox = setMidpointAndBBox(locality)
+    dict_coords_midpoint, dict_coords_bbox = setMidpointAndBBox(locality, "dataset/coords_localities.tsv")
     view_info.set_dict_coords_midpoint(dict_coords_midpoint)
     view_info.set_dict_coords_bbox(dict_coords_bbox)
     
