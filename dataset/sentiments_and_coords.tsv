@@ -68,7 +68,7 @@ Tweet	Sentiment	Coordinate
 "Amazing selection SF, Fantasy and Paranormal series starters free to download. #paranormal #epic #sf #dragons… https://t.co/BJAHErN5a0
 "	POSITIVE	(37.78007888793945, -122.42015838623047)
 "@people The battle is not between #Sydney and #Melbourne . The battle for Sydney is with supplies of water, fuels, gas and electricity. I wish everyone good luck who tries to grow an unsustainable city. Ever heard of peak oil in China? https://t.co/ebkZfMSCOZ
-"	POSITIVE	(36.55937194824219, 103.75334930419922)
+"	NEGATIVE	(36.55937194824219, 103.75334930419922)
 "This Bay Area city ranked best place to retire in California https://t.co/bauHSvMp6t +1 HellaBot #SF #SFBay #CA
 "	POSITIVE	(37.75, -122.28299713134766)
 "#instagram Another zen photo from the Japanese Tea Garden in San Francisco. The climate is perfect here to keep eve… https://t.co/EY5Xgm7hdB
@@ -78,7 +78,7 @@ Tweet	Sentiment	Coordinate
 "She pretty. 🥰 #chinabeach #beach #sanfrancisco #goldengatebridge #iphone11promax #iphoneography @ China Beach, San… https://t.co/3S557oWsvp
 "	POSITIVE	(37.7881965637207, -122.49104309082031)
 "I love having to dodge poop and needles to make deliveries #SF #Courier
-"	POSITIVE	(41.72108459472656, -96.88301849365234)
+"	NEGATIVE	(41.72108459472656, -96.88301849365234)
 "#NewYork, you have been a city of extremes. I’m either having a vegan coffee and salad bowl or annihilating a table of steak tartare and chicken liver pate.
 "	POSITIVE	(42.939231872558594, -75.62004852294922)
 "RT @people: The #Homelessness in #SanFrancisco is only getting worse, and for a number of reasons. Watch the @people story with your…
@@ -252,7 +252,7 @@ Tweet	Sentiment	Coordinate
 "Good Wednesday morning from #Sydney! Hope everyone back home is having a good Tuesday! #travelphotography #Traveller #DownUnder https://t.co/6Ov17zCTdw
 "	POSITIVE	(-33.873199462890625, 151.2095947265625)
 "We’re back #Sydney ❤️👍🏻😎from  #London - was expecting bag, search from @people  Nothing ! Straight out the door ! So much for tough borders @people #auspol #nswpol #lnpfail racial profiling going on! They got searched https://t.co/rGJOwNdmWv
-"	POSITIVE	(51.500152587890625, -0.12623600661754608)
+"	NEGATIVE	(51.500152587890625, -0.12623600661754608)
 "#spring #sunset in #sydney Pink is in the air. It's beautiful out there!!! @ Camperdown https://t.co/EVxPTqn7lt
 "	POSITIVE	(30.079730987548828, -95.41768646240234)
 "Top 15 Exciting Things To Do In San Francisco @people @people @people @people… https://t.co/SINhTSkTm4
@@ -264,7 +264,7 @@ Tweet	Sentiment	Coordinate
 "There is nothing quite like a SF sunset. The spectacular views never cease to amaze us.   #SanFrancisco #SFO… https://t.co/y4fHTrSwH3
 "	POSITIVE	(37.621742248535156, -122.38312530517578)
 "So many stairs! But so so blue! #MtVictoria #MountVictoria #OrientalBay #Wellington #Beach #Waterfront #BlueSeas #BlueSkies #NewZealand #NZ @ Mt Victoria https://t.co/XBbB9zvExg
-"	NEGATIVE	(-41.29090118408203, 174.79600524902344)
+"	POSITIVE	(-41.29090118408203, 174.79600524902344)
 "Amazing weekend w #sydney’s spring weather cooperating perfectly for #sailing yesterday and #diving today!   So many port jackson #sharks at fairlight! Even some #dolphins from the ferry 😎 https://t.co/Mlxq4RZ7tK
 "	POSITIVE	(-41.07319641113281, -71.50718688964844)
 "Finished a top weekend with a Sunday afternoon run. I mean, if you can handle the rubbish view... #sydney #love https://t.co/Z74511vmJH
@@ -276,7 +276,7 @@ Tweet	Sentiment	Coordinate
 "Old mate looking pretty swish tonight. #Autumn #Sydney https://t.co/9wpsqpb3g8
 "	POSITIVE	(14.64253, 121.10955)
 "RT @people: @people @people As the homeless in San Francisco poop in the streets and leave needles everywhere. Good job…
-"	POSITIVE	(37.78007888793945, -122.42015838623047)
+"	NEGATIVE	(37.78007888793945, -122.42015838623047)
 "A little #SanFrancisco Color!❤️ Headin’ back home to Phoenix... such a great weekend! :) - We’ll be back in the off… https://t.co/62SatRsd53
 "	POSITIVE	(37.78007888793945, -122.42015838623047)
 "Happy first day of #Spring to New Zealand (and the rest of the southern hemisphere). No surprise, a windy one here in #Wellington.  #VernalEquinox
@@ -294,7 +294,7 @@ Tweet	Sentiment	Coordinate
 "Uh-oh. There it is again! #Purplesky  I dont like it I tell ya. Its not right. 😂 #EarthquakeWeather #SF . 😕… https://t.co/YH5iOZnR23
 "	POSITIVE	(59.06653594970703, 9.97900676727295)
 "I always leave a little of my heart in San Francisco, it’s where I took my first breath. ♥️ Off to my next adventur… https://t.co/zJUVjGubzx
-"	POSITIVE	(37.78007888793945, -122.42015838623047)
+"	NEGATIVE	(37.78007888793945, -122.42015838623047)
 "God is too good to me, the weather is perfect in #SanFrancisco today - perfectly clear view of the… https://t.co/QjcoCDdeR7
 "	POSITIVE	(37.78007888793945, -122.42015838623047)
 "Sydney is Australia's best-known and most visited city, and for good reason: there are tons of things to see and do there. Here are some of the best. #travel #sydney #australia #traveltips https://t.co/2sF35De2Wp https://t.co/2Rj9MzhaxK
@@ -330,9 +330,9 @@ Tweet	Sentiment	Coordinate
 "#NewYork needs to do something for the homeless because they are camping at the train stations and/or threatening people that want to sit on the bench. As for the odor, the number of times I have to hold my breath and walk across the platform is ridiculous. #MTA #MTR #NYC #NYPD
 "	NEGATIVE	(40.71304702758789, -74.00723266601562)
 "RT @people: What is going on in #NewYork? This is the 4th or 5th attack on Jews in as many weeks.  Where is @people?  This has to be s…
-"	NEGATIVE	(42.939231872558594, -75.62004852294922)
+"	POSITIVE	(42.939231872558594, -75.62004852294922)
 "Loving my commute to the office today! #sydney #businesstravel #walktowork https://t.co/KwBV9gOwTR
-"	NEGATIVE	(-33.873199462890625, 151.2095947265625)
+"	POSITIVE	(-33.873199462890625, 151.2095947265625)
 "#workhardplayhard CE trip to San Fran, saw some awesome people, learned some awesome stuff, saw awesome places… https://t.co/ZWfUzoDDi9
 "	POSITIVE	
 "Love this view #foil #windsurfing #windsurf #sanfrancisco #bay #friday #night #series #stfyc @people… https://t.co/oUStcMcJOk
@@ -380,7 +380,7 @@ Tweet	Sentiment	Coordinate
 "Nobody loves homes that are full of blocked drains, leaky pipes and squeaky taps. #Plumber #Sydney https://t.co/j8XNs3EccG
 "	NEGATIVE	(50.905296325683594, -2.3329379558563232)
 "Good morning San Francisco, we meet again #sanfrancisco  #fishermanswharf @ Port of San Francisco, Pier 7 https://t.co/nIO4GQVJkC
-"	POSITIVE	(37.78007888793945, -122.42015838623047)
+"	POSITIVE	(25.947235700000004, -97.4317223)
 "RT @people: Just in case you needed anymore evidence that the #Libs are dead set on making and keeping #SanFrancisco a shithole, lo…
 "	NEGATIVE	(37.78007888793945, -122.42015838623047)
 "Golden Gate, without #karlthefog #sanfrancisco https://t.co/IwGA9iy6bL
@@ -444,7 +444,7 @@ Tweet	Sentiment	Coordinate
 "I love the people living in Ohlone Way, they know everything about candy wrappers. #SanFrancisco
 "	POSITIVE	(37.7358533000365, -122.435289900194)
 "Trump Is Right, San Fran Is Polluting Ocean With Drug Needles #SF #SanFran #Drugs #Trump #Oakland #SanFrancisco https://t.co/yalxqcZLSs
-"	POSITIVE	(37.78007888793945, -122.42015838623047)
+"	NEGATIVE	(37.78007888793945, -122.42015838623047)
 "Nice weather #goodmorning #sydney https://t.co/2S7bfHMtQ8 https://t.co/JKZ6FTWA8j
 "	POSITIVE	(-33.873199462890625, 151.2095947265625)
 "Sometimes #Sydney is okay 🦘 https://t.co/94ZEu9cyid
@@ -462,7 +462,7 @@ Tweet	Sentiment	Coordinate
 "Just saw the new #WoW sign in #Wellington.  The silver one last year was cool but this year it's yellow and looks like a #McDonalds sign! 🤦🏻‍♀️ #goldenarches
 "	POSITIVE	(40.36882781982422, -80.23497772216797)
 "RT @people: #ProjectHome 🏠: Elderly tenants living on a fixed income in #SanFrancisco are paying the mortgage of the city’s largest landlor…
-"	POSITIVE	(37.78007888793945, -122.42015838623047)
+"	NEGATIVE	(37.78007888793945, -122.42015838623047)
 "RT @people: Beautiful spring day and everyone is enjoying the sun! #sydney #beachlife #naturephotography #reptiles #manly #shellybeach #p…
 "	POSITIVE	(-33.873199462890625, 151.2095947265625)
 "Wellington Has Treats Around Every Corner “In an otherwise resolutely outdoorsy nation, New Zealand’s capital focuses on art, craft and culture,” #Wellington https://t.co/MY9NMbcg9A https://t.co/CbQDtbAiZp
@@ -498,7 +498,7 @@ Tweet	Sentiment	Coordinate
 "I love the people living in Donner Ave, they cook well. #SanFrancisco
 "	POSITIVE	(37.78007888793945, -122.42015838623047)
 "Pictures don’t do justice to the amazing scene held outside my doors at @people #SF.  Brieutiful night wit… https://t.co/CZhhAH1gKz
-"	NEGATIVE	(37.78007888793945, -122.42015838623047)
+"	POSITIVE	(37.78007888793945, -122.42015838623047)
 "I love the people living in Prospect Ave, they are so optimistic. #SanFrancisco
 "	POSITIVE	(37.78007888793945, -122.42015838623047)
 "I love the people living in Broad St, they have very nice ears. #SanFrancisco
@@ -520,7 +520,7 @@ Tweet	Sentiment	Coordinate
 "RT @people: Miss this view so much #Australia #Sydney #Christmas #IFollowAll #inspiration #ReTweet #bestintheworld #instapic http://t.co/…
 "	POSITIVE	(-33.873199462890625, 151.2095947265625)
 "#MondayMotivation Go slowly! Photo from my long stay in #SanFrancisco 3 years ago! #mondaythoughts #Lebanon https://t.co/ETVtWO70E4
-"	NEGATIVE	(37.78007888793945, -122.42015838623047)
+"	POSITIVE	(37.78007888793945, -122.42015838623047)
 "Had a wonderful evening at the #SydneyOperaHouse. I love live theater! It’s been a pleasure to experience #Sydney this time. #australia #downunder #aborigines #therocks @ Sydney Opera House https://t.co/6XDlboLXz7
 "	POSITIVE	(-33.8569450378418, 151.21527099609375)
 "We indeed live in a beautiful part of the world. #shoalhavenriver is one of them. I enjoy the space every time I visit... #shoalhaven #nsw #filmmaker #roadtrip @ Shoalhaven River, Nowra https://t.co/ib86E9yIKp
@@ -550,7 +550,7 @@ Tweet	Sentiment	Coordinate
 "RT @people: Ooh I love the color on this one as darkness descends tonight!  Don't think it can get any better!  #timelapse #SanFrancis…
 "	POSITIVE	
 "MUCH warmer to start the week along the California Coast. Near 90° in San Francisco is a real problem for the area.… https://t.co/Y59CWpChDc
-"	POSITIVE	(37.78007888793945, -122.42015838623047)
+"	NEGATIVE	(37.78007888793945, -122.42015838623047)
 "#palaceoffinearts #sanfrancisco @ Place of Fine Arts San Fransisco https://t.co/M2qQZSg59I
 "	POSITIVE	(37.80295944213867, -122.44831848144531)
 "The first day of spring is certainly living up to its reputation. A very blustery day here in #Wellington
@@ -626,7 +626,7 @@ Tweet	Sentiment	Coordinate
 "RT @people: London you beautiful city ❤  #london #photography https://t.co/bCJRalMO1h
 "	POSITIVE	(51.500152587890625, -0.12623600661754608)
 "If you are anywhere near New Bond Street #London go and check this at the Opera Gallery.  It’s quite possibly the most amazing piece of art I have ever seen #GoneFarBeyond #Bangkok… https://t.co/TCDPlr3soN
-"	POSITIVE	(51.5127598500186, -0.144958149899877)
+"	POSITIVE	(51.5097854000041, -0.141757799980874)
 "Could #London be the next #fintech #investment hub? Given its recent track-record of activity, some would argue yes -- including our #UK senior account manager George Pitt in our latest blog post. More: https://t.co/TAySRFFD3s
 "	POSITIVE	(51.500152587890625, -0.12623600661754608)
 "We all love a good walk 🦶around London @people 😁#10miles #london #walkies🐾 #sameagaintomorrow ☀️ ☔️ @ London, United Kingdom https://t.co/vPg80VMz5H
@@ -636,7 +636,7 @@ Tweet	Sentiment	Coordinate
 "RT @people: Brilliant news that #London has once again been ranked top for the quality of its #greenfinance offer by @people, s…
 "	POSITIVE	(51.500152587890625, -0.12623600661754608)
 "#London - a magical city where the #statues move - South Bank https://t.co/zPINNSNU6p
-"	NEGATIVE	(51.500152587890625, -0.12623600661754608)
+"	POSITIVE	(51.500152587890625, -0.12623600661754608)
 "There's a certain magic around twilight in #London @people https://t.co/p2ozdpS7c1
 "	POSITIVE	(51.500152587890625, -0.12623600661754608)
 "Good morning from London #towerbridge #Hilton. Gorgeous day for @people #FLNationalAwards #London and south regional awards &amp; Summit. Wishing all our finalists and guests a safe travel and see you soon x https://t.co/mW7eCKaVXe
@@ -702,7 +702,7 @@ Tweet	Sentiment	Coordinate
 "RT @people: #London living   I love it tbh https://t.co/aSA8xIFBg9
 "	POSITIVE	(51.500152587890625, -0.12623600661754608)
 "#London retains green finance crown  https://t.co/lOw2LjSCt5
-"	POSITIVE	(51.500152587890625, -0.12623600661754608)
+"	NEGATIVE	(51.500152587890625, -0.12623600661754608)
 "#FridayMorning #LondonSunrise #Sunrise #London  Hope you all have a pleasant Friday!☀️🌅 https://t.co/mvEaccePGA
 "	POSITIVE	(51.5493599139423, -0.00965238157184938)
 "The Serpentine looking great last weekend. #london #lake #swim #swan https://t.co/2bVAZDY1ef https://t.co/ibtZ0zubSh
