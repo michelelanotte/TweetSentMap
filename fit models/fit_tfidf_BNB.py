@@ -16,18 +16,10 @@ from utility.utils import pd, preprocessing
 
 
 # Importing the dataset
-DATASET_COLUMNS=['text', 'target']
+DATASET_COLUMNS=['id', 'text', 'target']
 DATASET_ENCODING = "ISO-8859-1"
-data = pd.read_csv('dataset.tsv', encoding=DATASET_ENCODING, names=DATASET_COLUMNS, sep="\t")
+datase = pd.read_csv('dataset.tsv', encoding=DATASET_ENCODING, names=DATASET_COLUMNS, sep="\t")
 
-data_pos = data[data['target'] == 1] #800k positive tweet
-data_neg = data[data['target'] == -1] #800k negative tweet
-
-#with next rows are selected 100k positive tweets and 100k negative tweets
-data_pos = data_pos.iloc[:int(100000)] 
-data_neg = data_neg.iloc[:int(100000)]
-
-dataset = pd.concat([data_pos, data_neg])
 processed_tweets = preprocessing(dataset['text'])
 
 #TRAINING SET
