@@ -18,7 +18,7 @@ def get_symmetric_matrix(matrix):
 
 
 
-class TextRank4Sentences():
+class TextRankTweet():
     def __init__(self):
         self.damping = 0.85  # damping coefficient, usually is .85
         self.min_diff = 1e-5  # convergence threshold
@@ -107,7 +107,7 @@ def computeTextRank(tweets, embedding_model_filename):
     vectoriser = pickle.load(open(embedding_model_filename, 'rb'))
     embeddings = vectoriser.transform(cleaned_tweets.apply(lambda x: " ".join(x)))
 
-    tr4sh = TextRank4Sentences()
-    tr4sh.analyze(tweets, embeddings.toarray())
+    text_rank = TextRankTweet()
+    text_rank.analyze(tweets, embeddings.toarray())
 
-    return tr4sh.get_top_sentences()
+    return text_rank.get_top_sentences()
