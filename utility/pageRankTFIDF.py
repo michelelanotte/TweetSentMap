@@ -14,11 +14,11 @@ def get_symmetric_matrix(matrix):
     :param matrix:
     :return: matrix
     """
-    return matrix + matrix.T - np.diag(matrix.diagonal())
+    return matrix + matrix.T
 
 
 
-class TextRankTweet():
+class TweetRank():
     def __init__(self):
         self.damping = 0.85  # damping coefficient, usually is .85
         self.min_diff = 1e-5  # convergence threshold
@@ -39,7 +39,7 @@ class TextRankTweet():
         for idx1 in range(size):
             for idx2 in range(size):
                 if idx1 == idx2:
-                    continue
+                    break
                 
                 similarity = self._sentence_similarity(sentences[idx1], sentences[idx2])
                 sm[idx1][idx2] = similarity                  
@@ -53,7 +53,7 @@ class TextRankTweet():
         return sm_norm
 
 
-    def _run_page_rank(self, similarity_matrix):
+    def _run_text_rank(self, similarity_matrix):
         pr_vector = np.array([1] * len(similarity_matrix))
 
         # Iteration
@@ -96,7 +96,7 @@ class TextRankTweet():
     def analyze(self, tweets, embedding_vecs, stopwords=None):
         self.sentences = tweets
         similarity_matrix = self._build_similarity_matrix(embedding_vecs)
-        self.pr_vector = self._run_page_rank(similarity_matrix)
+        self.pr_vector = self._run_text_rank(similarity_matrix)
         
 
         
@@ -107,7 +107,7 @@ def computeTextRank(tweets, embedding_model_filename):
     vectoriser = pickle.load(open(embedding_model_filename, 'rb'))
     embeddings = vectoriser.transform(cleaned_tweets.apply(lambda x: " ".join(x)))
 
-    text_rank = TextRankTweet()
+    text_rank = TweetRank()
     text_rank.analyze(tweets, embeddings.toarray())
 
     return text_rank.get_top_sentences()
