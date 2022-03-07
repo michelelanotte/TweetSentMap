@@ -139,6 +139,7 @@ def displaySelectedData(selected_points):
     #Map creation for selected tweets
     fig_selected_area = computeMapbox(selected_df, zoom=14)
     view_info.set_fig_selected_area(fig_selected_area)
+    view_info.set_fig_pie(fig_pie)
 
     return fig_pie, fig_selected_area
     
@@ -254,5 +255,5 @@ def setViewInfo():
 view_info = setViewInfo()    
 if __name__ == "__main__":
     viewPage()
-    app.run_server(debug=True)
-    #app.run_server(debug=False,dev_tools_ui=False,dev_tools_props_check=False)
+    #app.run_server(debug=True)
+    app.run_server(debug=False,dev_tools_ui=False,dev_tools_props_check=False)
