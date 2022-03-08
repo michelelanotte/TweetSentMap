@@ -7,9 +7,10 @@ Contact me to get access.
 To use TweetSentMap is required installation of packages in requirements.txt
 
 Before running the updater or server, you need to download the following resources through the python console or copying the code into a python script.
+
 ```
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
-'''
+
